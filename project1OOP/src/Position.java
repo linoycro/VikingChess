@@ -48,5 +48,9 @@ public class Position {
         System.out.print("(" + x + ", " + y + ")");
     }
 
+    public String stringPos(){
+        return "(" + x + ", " + y + ")";
+    }
+
 
 }

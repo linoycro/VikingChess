@@ -10,9 +10,9 @@ public class SquarsComparator {
     private ConcretePiece[] dead;
     private ArrayList<Position> squars = new ArrayList<Position>();
 
-    private int[][] positions = new int[11][11];
+    private Position[][] positions = new Position[11][11];
 
-    public SquarsComparator(int[][] positions) {
+    public SquarsComparator(Position[][] positions) {
         this.positions = positions;
         makeArray();
     }
@@ -20,8 +20,8 @@ public class SquarsComparator {
     public void makeArray() {
         for (int i = 0; i < 11; i++) {
             for (int j = 0; j < 11; j++) {
-                if (positions[i][j] > 2)
-                    squars.add(new Position(i, j, positions[i][j]));
+                if (positions[i][j].getStepped() >= 2)
+                    squars.add(positions[i][j]);
             }
         }
         Collections.sort(squars, new ComparatorY());
@@ -33,7 +33,7 @@ public class SquarsComparator {
         if (squars != null && !squars.isEmpty()) {
             for (int i = 0; i < squars.size(); i++) {
                 if (squars.get(i) != null)
-                    System.out.println("(" + squars.get(i).getX() + ", " + squars.get(i).getY() + ")" + squars.get(i).getStepped() + "  pieces");
+                    System.out.println(squars.get(i).stringPos() + squars.get(i).getStepped() + " pieces");
             }
         }
         for (int i = 0; i < 75; i++) {
@@ -55,7 +55,7 @@ class ComparatorX implements Comparator<Position> {
     @Override
     public int compare(Position a, Position b) {
         if (a != null && b != null)
-            return b.getX() - a.getX();
+            return a.getX() - b.getX();
         return 0;
     }
 }
@@ -64,7 +64,7 @@ class ComparatorY implements Comparator<Position> {
     @Override
     public int compare(Position a, Position b) {
         if (a != null && b != null)
-            return b.getY() - a.getY();
+            return a.getY() - b.getY();
         return 0;
     }
 }

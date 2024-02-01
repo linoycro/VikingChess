@@ -7,11 +7,12 @@ public class GameLogic implements PlayableLogic{
     private ConcretePlayer player1, player2;
     private ConcretePiece[][] board = new ConcretePiece[11][11];
     private ConcretePiece[] pieces = new ConcretePiece[37];
-    private int[][] positions = new int[11][11];
+    private Position[][] positions = new Position[11][11];
+
+    private boolean winner1;
 
     private Position kingP;
     private boolean player2turn;
-    private Stack<ConcretePiece[][]> movesStack = new Stack<ConcretePiece[][]>();
     private int lp=0;
 
     public GameLogic(){
@@ -20,10 +21,50 @@ public class GameLogic implements PlayableLogic{
         player2=new ConcretePlayer(false);
         board = createBoard();
         player2turn = true;
+        for (int i=0; i<11; i++)
+            for (int j=0; j<11; j++)
+                positions[i][j]=new Position(i, j);
     }
 
     public ConcretePiece[][] createBoard(){
         ConcretePiece[][] temp = new ConcretePiece[11][11];
+//        temp[3][0]= new Pawn(player2, "♟", 7);
+//        temp[4][0]= new Pawn(player2, "♟", 9);
+//        temp[5][0]= new Pawn(player2, "♟", 11);
+//        temp[6][0]= new Pawn(player2, "♟", 15);
+//        temp[7][0]= new Pawn(player2, "♟", 17);
+//        temp[5][1]= new Pawn(player2, "♟", 12);
+//        temp[3][10]= new Pawn(player2, "♟", 8);
+//        temp[4][10]= new Pawn(player2, "♟",10);
+//        temp[5][10]= new Pawn(player2, "♟",14);
+//        temp[6][10]= new Pawn(player2, "♟",16);
+//        temp[7][10]= new Pawn(player2, "♟", 18);
+//        temp[5][9]= new Pawn(player2, "♟", 13);
+//        temp[10][3]= new Pawn(player2, "♟", 20);
+//        temp[10][4]= new Pawn(player2, "♟",21);
+//        temp[10][5]= new Pawn(player2, "♟",22);
+//        temp[10][6]= new Pawn(player2, "♟",23);
+//        temp[10][7]= new Pawn(player2, "♟",24);
+//        temp[9][5]= new Pawn(player2, "♟",19);
+//        temp[0][3]= new Pawn(player2, "♟",1);
+//        temp[0][4]= new Pawn(player2, "♟",2);
+//        temp[0][5]= new Pawn(player2, "♟",3);
+//        temp[0][6]= new Pawn(player2, "♟",4);
+//        temp[0][7]= new Pawn(player2, "♟",5);
+//        temp[1][5]= new Pawn(player2, "♟",6);
+//        temp[5][3]= new Pawn(player1, "♙",5);
+//        temp[5][7]= new Pawn(player1, "♙", 9);
+//        temp[4][4]= new Pawn(player1, "♙",2);
+//        temp[5][4]= new Pawn(player1, "♙", 6);
+//        temp[6][4]= new Pawn(player1, "♙", 10);
+//        temp[4][6]= new Pawn(player1, "♙", 4);
+//        temp[5][6]= new Pawn(player1, "♙", 8);
+//        temp[6][6]= new Pawn(player1, "♙", 12);
+//        temp[3][5]= new Pawn(player1, "♙", 1);
+//        temp[4][5]= new Pawn(player1, "♙", 3);
+//        temp[5][5]= new Pawn(player1, "♔", 7);
+//        temp[6][5]= new Pawn(player1, "♙", 11);
+//        temp[7][5]= new Pawn(player1, "♙", 13);
         temp[0][3]= new Pawn(player2, "♟", 7);
         temp[0][4]= new Pawn(player2, "♟", 9);
         temp[0][5]= new Pawn(player2, "♟", 11);
@@ -81,14 +122,13 @@ public class GameLogic implements PlayableLogic{
                 else flag=false;
             } else flag = false;
             if (flag) {
-                movesStack.push(board.clone());
+                if (!board[a.getX()][a.getY()].steppedOn(a))
+                    positions[a.getX()][a.getY()].addStep();
                 if (!board[a.getX()][a.getY()].steppedOn(b))
-                    positions[b.getX()][b.getY()]++;
+                    positions[b.getX()][b.getY()].addStep();
                 if (board[a.getX()][a.getY()].getSteps().isEmpty())
                     board[a.getX()][a.getY()].addStep(a);
                 board[a.getX()][a.getY()].addStep(b);
-                if (positions[a.getX()][a.getY()]==0)
-                    positions[a.getX()][a.getY()]++;
             }
             if (flag && a.getX() == kingP.getX() && a.getY() == kingP.getY()) {
                 kingP = b;
@@ -103,6 +143,7 @@ public class GameLogic implements PlayableLogic{
                     eat(b);
                 } else return false;
             }
+            isGameFinished();
             return flag;
         }
         return false;
@@ -180,10 +221,10 @@ public class GameLogic implements PlayableLogic{
     public boolean isGameFinished() {
         if (kingP.getY()==10 && kingP.getX()==10 || kingP.getY()==0 && kingP.getX()==0 || kingP.getY()==10 && kingP.getX()==0 || kingP.getY()==0 && kingP.getX()==10) {
             player1.addWIn();
-            KillComparator c= new KillComparator(board, true, pieces);
-            c.PrintArrayKills();
             StepsComparator s = new StepsComparator(board, pieces, true);
             s.PrintArraySteps();
+            KillComparator c = new KillComparator(board, true, pieces);
+            c.PrintArrayKills();
             DistanceComparator d = new DistanceComparator(board,pieces,true);
             d.PrintPlayerDistance();
             SquarsComparator sq = new SquarsComparator(positions);
@@ -201,10 +242,10 @@ public class GameLogic implements PlayableLogic{
         }
         if (flag) {
             player2.addWIn();
-            KillComparator c = new KillComparator(board, false, pieces);
-            c.PrintArrayKills();
             StepsComparator s = new StepsComparator(board, pieces, false);
             s.PrintArraySteps();
+            KillComparator c = new KillComparator(board, false, pieces);
+            c.PrintArrayKills();
             DistanceComparator d = new DistanceComparator(board,pieces,false);
             d.PrintPlayerDistance();
             SquarsComparator sq = new SquarsComparator(positions);
@@ -228,9 +269,6 @@ public class GameLogic implements PlayableLogic{
 
     @Override
     public void undoLastMove() {
-        if (!movesStack.isEmpty()) {
-            board = movesStack.pop();
-        }
     }
 
     @Override

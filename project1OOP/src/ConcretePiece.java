@@ -8,6 +8,7 @@ public abstract class ConcretePiece implements Piece {
     private int serialNum;
     private ArrayList<Position> steps;
     private int distance;
+//    private static boolean winner1;
 
 
     public ConcretePiece(ConcretePlayer owner, String type, int serialNum) {
@@ -15,8 +16,9 @@ public abstract class ConcretePiece implements Piece {
         this.type = type;
         this.serialNum= serialNum;
         kills = 0;
-        steps = new ArrayList<Position>();
+        steps = new ArrayList<>();
         distance=0;
+//        this.winner1=winner1;
     }
 
     public ConcretePiece(ConcretePiece c) {
@@ -107,6 +109,12 @@ public abstract class ConcretePiece implements Piece {
     }
     public int getSerialNum() {
         return serialNum;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "" + getSerialNum();
     }
 }
 

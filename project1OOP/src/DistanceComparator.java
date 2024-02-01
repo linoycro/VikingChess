@@ -48,7 +48,9 @@ public class DistanceComparator {
         int i=0;
         while(i< pieces.length && pieces[i]!= null && pieces[i].getDistance()>0){
             if (pieces[i].getOwner().isPlayerOne()) {
-                System.out.println("D" + pieces[i].getSerialNum() + ": " + pieces[i].getDistance() + " squares");
+                if (pieces[i].getSerialNum() == 7)
+                    System.out.println("K" + pieces[i].getSerialNum() + ": " + pieces[i].getDistance() + " squares");
+                else System.out.println("D" + pieces[i].getSerialNum() + ": " + pieces[i].getDistance() + " squares");
             } else {
                 System.out.println("A" + pieces[i].getSerialNum() + ": " + pieces[i].getDistance() + " squares");
             }
