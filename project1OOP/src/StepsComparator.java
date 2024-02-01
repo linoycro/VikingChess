@@ -107,14 +107,19 @@ public class StepsComparator {
         public int compare(ConcretePiece a, ConcretePiece b) {
 
 //            if (a != null && b != null)
-               if (a.getSteps() != null && b.getSteps() != null)
-                  if (!a.getSteps().isEmpty() && !b.getSteps().isEmpty()) {
-                      if (a.getSteps().size() == b.getSteps().size())
-                      {
-                          return -Integer.compare(a.getSerialNum(),b.getSerialNum());
-                      }
-                      return Integer.compare(a.getSteps().size(), b.getSteps().size());
-                  }
+            if (a.getSteps() != null && b.getSteps() != null) {
+                if (!a.getSteps().isEmpty() && !b.getSteps().isEmpty()) {
+                    if (a.getSteps().size() != b.getSteps().size())
+                        return Integer.compare(a.getSteps().size(), b.getSteps().size());
+                    else {
+                        if (a.getSerialNum() < b.getSerialNum())
+                            return 1;
+                        if (b.getSerialNum() < a.getSerialNum())
+                            return -1;
+                    }
+
+                }
+            }
             return 0;
         }
     }
@@ -133,19 +138,19 @@ public class StepsComparator {
 //}
 //
 
-class MyComparatorByNum implements Comparator<ConcretePiece> {
-
-    @Override
-    public int compare(ConcretePiece a, ConcretePiece b) {
-
-        if (a != null && b != null)
-             {
-                 if (a.getSerialNum()< b.getSerialNum())
-                     return -1;
-                 if (b.getSerialNum()<a.getSerialNum())
-                     return 1;
-             }
-
-        return 0;
-    }
-}
+//class MyComparatorByNum implements Comparator<ConcretePiece> {
+//
+//    @Override
+//    public int compare(ConcretePiece a, ConcretePiece b) {
+//
+//        if (a != null && b != null)
+//             {
+//                 if (a.getSerialNum()< b.getSerialNum())
+//                     return -1;
+//                 if (b.getSerialNum()<a.getSerialNum())
+//                     return 1;
+//             }
+//
+//        return 0;
+//    }
+//}

@@ -9,7 +9,7 @@ public class GameLogic implements PlayableLogic{
     private ConcretePiece[] pieces = new ConcretePiece[37];
     private Position[][] positions = new Position[11][11];
 
-    private boolean winner1;
+    private static boolean winner1;
 
     private Position kingP;
     private boolean player2turn;
@@ -143,9 +143,30 @@ public class GameLogic implements PlayableLogic{
                     eat(b);
                 } else return false;
             }
-            isGameFinished();
+            if (isGameFinished()){
+                StepsComparator s = new StepsComparator(board, pieces, winner1);
+                s.PrintArraySteps();
+                KillComparator c = new KillComparator(board, winner1, pieces);
+                c.PrintArrayKills();
+                DistanceComparator d = new DistanceComparator(board,pieces,winner1);
+                d.PrintPlayerDistance();
+                SquarsComparator sq = new SquarsComparator(positions);
+                sq.printArray();
+            }
+            //isGameFinished();
             return flag;
         }
+        if (isGameFinished()){
+            StepsComparator s = new StepsComparator(board, pieces, winner1);
+            s.PrintArraySteps();
+            KillComparator c = new KillComparator(board, winner1, pieces);
+            c.PrintArrayKills();
+            DistanceComparator d = new DistanceComparator(board,pieces,winner1);
+            d.PrintPlayerDistance();
+            SquarsComparator sq = new SquarsComparator(positions);
+            sq.printArray();
+        }
+        //isGameFinished();
         return false;
     }
 
@@ -221,37 +242,26 @@ public class GameLogic implements PlayableLogic{
     public boolean isGameFinished() {
         if (kingP.getY()==10 && kingP.getX()==10 || kingP.getY()==0 && kingP.getX()==0 || kingP.getY()==10 && kingP.getX()==0 || kingP.getY()==0 && kingP.getX()==10) {
             player1.addWIn();
-            StepsComparator s = new StepsComparator(board, pieces, true);
-            s.PrintArraySteps();
-            KillComparator c = new KillComparator(board, true, pieces);
-            c.PrintArrayKills();
-            DistanceComparator d = new DistanceComparator(board,pieces,true);
-            d.PrintPlayerDistance();
-            SquarsComparator sq = new SquarsComparator(positions);
-            sq.printArray();
+            winner1 = true;
+
             return true;
         }
-        Position [] arr = new Position[4];
-        closePositions(arr, kingP);
-        boolean flag = true;
-        for (int i=0; i< arr.length; i++) {
-            Position temp = arr [i];
-            if (temp.getX()<=10 && temp.getX()>=0 && temp.getY()>=0 && temp.getY()<=10)
-                if (board[temp.getX()][temp.getY()] == null || board[temp.getX()][temp.getY()].getOwner().isPlayerOne())
-                    flag=false;
+        else {
+            Position [] arr = new Position[4];
+            closePositions(arr, kingP);
+            boolean flag = true;
+            for (int i=0; i< arr.length; i++) {
+                Position temp = arr [i];
+                if (temp.getX()<=10 && temp.getX()>=0 && temp.getY()>=0 && temp.getY()<=10)
+                    if (board[temp.getX()][temp.getY()] == null || board[temp.getX()][temp.getY()].getOwner().isPlayerOne())
+                        flag=false;
+            }
+            if (flag){
+                player2.addWIn();
+                winner1 = false;
+            }
+            return flag;
         }
-        if (flag) {
-            player2.addWIn();
-            StepsComparator s = new StepsComparator(board, pieces, false);
-            s.PrintArraySteps();
-            KillComparator c = new KillComparator(board, false, pieces);
-            c.PrintArrayKills();
-            DistanceComparator d = new DistanceComparator(board,pieces,false);
-            d.PrintPlayerDistance();
-            SquarsComparator sq = new SquarsComparator(positions);
-            sq.printArray();
-        }
-        return flag;
     }
 
     @Override
